@@ -137,7 +137,13 @@ const crusts = ['Regular', 'Thin Crust', 'Cheese Burst'];
 const sliceOptions = [4, 6, 8];
 const flavours = ['Classic', 'Spicy', 'Cheesy'];
 const spiceLevels = ['Mild', 'Medium', 'Spicy'];
-const toppings = ['Extra Cheese', 'Onion', 'Capsicum', 'Paneer'];
+
+const toppings = [
+  { name: 'Extra Cheese', price: 20 },
+  { name: 'Onion', price: 20 },
+  { name: 'Capsicum', price: 20 },
+  { name: 'Paneer', price: 20 },
+];
 
 export default function ExploreScreen() {
   const { addToCart } = useCart();
@@ -172,14 +178,12 @@ export default function ExploreScreen() {
 
   const openCustomize = (pizza: any) => {
     setSelectedPizza(pizza);
-
     setSelectedFlavour('Classic');
     setSelectedSize('Small');
     setSelectedCrust('Regular');
     setSelectedSlices(4);
     setSelectedSpice('Mild');
     setSelectedToppings([]);
-
     setCustomizeVisible(true);
   };
 
@@ -356,6 +360,10 @@ export default function ExploreScreen() {
                     {selectedPizza.name}
                   </Text>
 
+                  <Text style={styles.basePriceText}>
+                    Base Price: ₹{selectedPizza.price}
+                  </Text>
+
                   <Text style={styles.optionTitle}>
                     Flavour
                   </Text>
@@ -510,31 +518,35 @@ export default function ExploreScreen() {
                     Extra Toppings
                   </Text>
 
+                  <Text style={styles.toppingInfo}>
+                    Each extra topping costs ₹20
+                  </Text>
+
                   <View style={styles.optionRow}>
                     {toppings.map((topping) => (
                       <Pressable
-                        key={topping}
+                        key={topping.name}
                         style={[
                           styles.optionButton,
                           selectedToppings.includes(
-                            topping
+                            topping.name
                           ) &&
                             styles.selectedOption,
                         ]}
                         onPress={() =>
-                          toggleTopping(topping)
+                          toggleTopping(topping.name)
                         }
                       >
                         <Text
                           style={[
                             styles.optionText,
                             selectedToppings.includes(
-                              topping
+                              topping.name
                             ) &&
                               styles.selectedOptionText,
                           ]}
                         >
-                          {topping}
+                          {topping.name} +₹{topping.price}
                         </Text>
                       </Pressable>
                     ))}
@@ -572,9 +584,14 @@ export default function ExploreScreen() {
                         : 'None'}
                     </Text>
 
+                    <Text style={styles.summaryText}>
+                      Extra Topping Charges: ₹
+                      {selectedToppings.length * 20}
+                    </Text>
+
                     <View style={styles.priceRow}>
                       <Text style={styles.totalLabel}>
-                        Total
+                        Total Pizza Price
                       </Text>
 
                       <Text style={styles.totalPrice}>
@@ -587,9 +604,7 @@ export default function ExploreScreen() {
                     style={styles.addCustomizedButton}
                     onPress={addCustomizedPizza}
                   >
-                    <Text
-                      style={styles.addCustomizedText}
-                    >
+                    <Text style={styles.addCustomizedText}>
                       Add Customized Pizza
                     </Text>
                   </Pressable>
@@ -753,10 +768,22 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
 
+  basePriceText: {
+    fontSize: 14,
+    marginTop: 5,
+    color: '#555555',
+  },
+
   optionTitle: {
     fontSize: 17,
     fontWeight: 'bold',
     marginTop: 20,
+    marginBottom: 10,
+  },
+
+  toppingInfo: {
+    fontSize: 13,
+    color: '#777777',
     marginBottom: 10,
   },
 
@@ -812,6 +839,7 @@ const styles = StyleSheet.create({
   priceRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    alignItems: 'center',
     marginTop: 15,
     paddingTop: 12,
     borderTopWidth: 1,
@@ -821,6 +849,7 @@ const styles = StyleSheet.create({
   totalLabel: {
     fontSize: 18,
     fontWeight: 'bold',
+    flex: 1,
   },
 
   totalPrice: {
